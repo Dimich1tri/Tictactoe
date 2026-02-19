@@ -2,7 +2,7 @@
 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 ![Artificial Intelligence](https://img.shields.io/badge/IA-Minimax%20%2B%20Alpha--Beta-FF4B4B?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)
 
 > Un clásico juego de Tres en Raya (Tic-Tac-Toe) impulsado por Inteligencia Artificial y escrito en C++. Este proyecto implementa algoritmos de búsqueda adversarial para crear un oponente que nunca pierde. ¡Intenta ganarle (o al menos empatarle) a la máquina! ⚔️
 
