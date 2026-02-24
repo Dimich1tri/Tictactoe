@@ -47,7 +47,7 @@ git clone [https://github.com/tu-usuario/tu-repo-tictactoe.git](https://github.c
 cd tu-repo-tictactoe
 
 # 3. Compila el código fuente
-g++ -std=c++17 -O3 -o tictactoe main.cpp
+g++ main.cpp EstadoJuego.cxx ArbolJuego.cxx Minimax.cxx -o tictactoe
 
 # 4. Ejecuta el juego
 ./tictactoe
