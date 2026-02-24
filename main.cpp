@@ -79,6 +79,12 @@ int main() {
             default:
                 break;
         }
+
+        if (arbol.obtenerRaiz()->revisarFinPartida().first) {
+            imprimirTablero(arbol.obtenerRaiz()->obtenerTablero());
+            cout << arbol.obtenerRaiz()->revisarFinPartida().second << endl;
+            estadoActual = FIN_PARTIDA;
+        }
     }
 
     return 0;

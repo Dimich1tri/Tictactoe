@@ -3,16 +3,29 @@
 
 #include <vector>
 #include <list>
+#include <string>
 
-enum EstadoCasilla { VACIO = 0, FICHA_MIN = -1, FICHA_MAX = 1 };
+enum EstadoCasilla
+{
+    VACIO = 0,
+    FICHA_MIN = -1,
+    FICHA_MAX = 1
+};
 
-class EstadoJuego {
+enum EstadoFinal
+{
+    VICTORIA = 3,
+    DERROTA = -3
+};
+
+class EstadoJuego
+{
 protected:
     std::vector<std::vector<int>> tablero;
     int heuristica;
     bool esMax;
 
-    std::list<EstadoJuego*> desc;
+    std::list<EstadoJuego *> desc;
 
 public:
     EstadoJuego(bool iniciaMax);
@@ -26,12 +39,12 @@ public:
     void asignarHeuristica(int h);
     bool obtenerTurno() const;
     void asignarTurno(bool turnoMax);
+    std::pair<bool,std::string> revisarFinPartida();
 
     void limpiarLista();
-    void adicionarDesc(EstadoJuego* nval);
-    std::list<EstadoJuego*>& obtenerDesc();
+    void adicionarDesc(EstadoJuego *nval);
+    std::list<EstadoJuego *> &obtenerDesc();
     bool esHoja() const;
-
 };
 
 #endif

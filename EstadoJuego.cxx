@@ -53,6 +53,49 @@ void EstadoJuego::asignarTurno(bool turnoMax) {
      esMax = turnoMax; 
 }
 
+std::pair<bool,std::string> EstadoJuego::revisarFinPartida() {
+    int columnaN = 0;
+    int filaN = 0;
+    std::pair<int, int> diagonal = {0,0};
+    std::pair<bool,std::string> res;
+
+    diagonal.first = tablero[0][0] + tablero[1][1] + tablero[2][2];
+    diagonal.second = tablero[0][2] + tablero[1][1] + tablero[2][0];
+
+    bool d1 = diagonal.first == VICTORIA || diagonal.second == VICTORIA;
+    bool d2 = diagonal.first == DERROTA || diagonal.second == DERROTA;
+    bool empate = false;
+
+    for (int i = 0; i < 3; ++i) {
+
+        columnaN = tablero[i][0] + tablero[i][1] + tablero[i][2];
+        
+        filaN = tablero[0][i] + tablero[1][i] + tablero[2][i];
+
+        if (columnaN == VICTORIA || filaN == VICTORIA || d1) {
+            return res = {true, " \033[1;31m Jugador X Gano\033[0m "};
+        }else if (columnaN == DERROTA || filaN == DERROTA || d2) {
+            return res = {true," \033[1;34mJugador O Gano\033[0m "};
+        }
+    }
+
+    // Empate
+    int casillaUsada = 0;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (std::abs(tablero[i][j])) {
+                casillaUsada++;
+            }
+        }
+    }
+
+    if(casillaUsada == 9){
+        return res = {true," \033[1;34mEmpate\033[0m "};
+    } 
+
+    return res = {false, ""};
+}
+
 void EstadoJuego::adicionarDesc(EstadoJuego* nval) {
     this->desc.push_back(nval);
 }
