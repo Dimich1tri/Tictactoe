@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <thread>
+#include <chrono>
 #include "EstadoJuego.h"
 #include "MiniMax.h"
 #include "ArbolJuego.h"
@@ -10,7 +12,8 @@ using namespace std;
 
 enum gameFSM {
     TURNO_HUMANO,
-    TURNO_IA,
+    TURNO_IA_MAX,
+    TURNO_IA_MIN,
     FIN_PARTIDA
 };
 
@@ -39,7 +42,11 @@ int main() {
     ArbolJuego arbol(new EstadoJuego(true));
     Minimax ia(&arbol); 
 
-    gameFSM estadoActual = TURNO_HUMANO;
+    bool jugadorIA;
+    cout << "Elegir tipo de jugador \n\t0.Manual\n\t1.Automatico" << endl;
+    cin >> jugadorIA;
+
+    gameFSM estadoActual = jugadorIA ? TURNO_IA_MAX: TURNO_HUMANO;
 
     while (estadoActual != FIN_PARTIDA) {
         EstadoJuego* raizActual = arbol.obtenerRaiz();
@@ -58,21 +65,32 @@ int main() {
                     EstadoJuego* nuevoEstado = new EstadoJuego(nuevoTablero, true);
                     arbol.actualizarRaiz(nuevoEstado);
                     
-                    estadoActual = TURNO_IA; 
+                    estadoActual = TURNO_IA_MIN; 
                 } else {
                     cout << "Movimiento invalido.\n";
                 }
                 break;
             }
 
-            case TURNO_IA: {
+            case TURNO_IA_MAX: {
+                ia.expandirArbol();
+                ia.evaluarDFS();
+                ia.ejecutarMejorJugada();
+                imprimirTablero(arbol.obtenerRaiz()->obtenerTablero());
+                this_thread::sleep_for(chrono::seconds(2));
+
+                estadoActual = TURNO_IA_MIN;        
+                break;
+            }
+
+            case TURNO_IA_MIN: {
                 cout << "IA ...\n";
                 
                 ia.expandirArbol();
                 ia.evaluarDFS();
                 ia.ejecutarMejorJugada();
 
-                estadoActual = TURNO_HUMANO;
+                estadoActual = jugadorIA ? TURNO_IA_MAX: TURNO_HUMANO;
                 break;
             }
 
