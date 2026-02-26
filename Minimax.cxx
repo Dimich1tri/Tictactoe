@@ -91,7 +91,11 @@ void Minimax::expandirRecursivo(EstadoJuego* nodoActual, int profundidadActual) 
     }
 }
 
-void Minimax::evaluarRecursivo(EstadoJuego* nodoActual) {
+#include <algorithm>
+#include <limits>
+
+void Minimax::evaluarRecursivo(EstadoJuego* nodoActual, int alpha, int beta) {
+
     if (nodoActual->esHoja()) {
         int h = calcularHeuristica(nodoActual);
         nodoActual->asignarHeuristica(h);
@@ -99,20 +103,26 @@ void Minimax::evaluarRecursivo(EstadoJuego* nodoActual) {
     }
 
     std::list<EstadoJuego*>& hijos = nodoActual->obtenerDesc();
-    for (EstadoJuego* hijo : hijos) {
-        evaluarRecursivo(hijo);
-    }
+    int valorPropagado = !nodoActual->obtenerTurno() ? std::numeric_limits<int>::min() : std::numeric_limits<int>::max();
 
-    int valorPropagado = hijos.front()->obtenerHeuristica();
 
     for (EstadoJuego* hijo : hijos) {
+
+        evaluarRecursivo(hijo, alpha, beta);
+
         int valorHijo = hijo->obtenerHeuristica();
 
         if (!nodoActual->obtenerTurno()) {
-            valorPropagado = (valorHijo > valorPropagado) ? valorHijo : valorPropagado;
+            valorPropagado = std::max(valorPropagado, valorHijo);
+            alpha = std::max(alpha, valorPropagado);
         }
         else {
-            valorPropagado = (valorHijo < valorPropagado) ? valorHijo : valorPropagado;
+            valorPropagado = std::min(valorPropagado, valorHijo);
+            beta = std::min(beta, valorPropagado);
+        }
+        if (beta <= alpha) {
+            std::cout << "Poda realizada" << std::endl;
+            break;
         }
     }
 
