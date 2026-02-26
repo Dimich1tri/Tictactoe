@@ -91,9 +91,6 @@ void Minimax::expandirRecursivo(EstadoJuego* nodoActual, int profundidadActual) 
     }
 }
 
-#include <algorithm>
-#include <limits>
-
 void Minimax::evaluarRecursivo(EstadoJuego* nodoActual, int alpha, int beta) {
 
     if (nodoActual->esHoja()) {
@@ -114,11 +111,11 @@ void Minimax::evaluarRecursivo(EstadoJuego* nodoActual, int alpha, int beta) {
 
         if (!nodoActual->obtenerTurno()) {
             valorPropagado = std::max(valorPropagado, valorHijo);
-            alpha = std::max(alpha, valorPropagado);
+            alpha = alpha > valorPropagado ? alpha : valorPropagado;
         }
         else {
             valorPropagado = std::min(valorPropagado, valorHijo);
-            beta = std::min(beta, valorPropagado);
+            beta = beta < valorPropagado ? beta : valorPropagado;
         }
         if (beta <= alpha) {
             std::cout << "Poda realizada" << std::endl;

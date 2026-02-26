@@ -3,6 +3,7 @@
 
 #include "ArbolJuego.h"
 #include <vector>
+#include <limits>
 
 class Minimax {
 private:
