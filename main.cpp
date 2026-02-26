@@ -1,3 +1,15 @@
+/******************************************************************************/
+/* HOW TO COMPILE TO PRODUCE EXECUTABLE PROGRAM:                              */
+/*                                                                            */
+/* g++ main.cpp EstadoJuego.cxx ArbolJuego.cxx Minimax.cxx -o tictactoe       */
+/*                                                                            */
+/* HOW TO RUN THE PROGRAM:                                                    */
+/*                                                                            */
+/* ./tictactoe                                                                */
+/*                                                                            */
+/******************************************************************************/
+
+/********************************** Headers ***********************************/
 #include <iostream>
 #include <vector>
 #include <thread>
@@ -6,9 +18,9 @@
 #include "MiniMax.h"
 #include "ArbolJuego.h"
 
-/*g++ main.cpp EstadoJuego.cxx ArbolJuego.cxx Minimax.cxx -o tictactoe*/
-
 using namespace std;
+
+/**************************** Symbolic Constants ******************************/
 
 enum gameFSM {
     TURNO_HUMANO,
@@ -16,6 +28,21 @@ enum gameFSM {
     TURNO_IA_MIN,
     FIN_PARTIDA
 };
+
+/*************************** Prototype of Functions ***************************/
+
+/******************************************************************************/
+/*                                                                            */
+/* void imprimirTablero(const vector<vector<int>>& tab);                      */
+/*                                                                            */
+/* Purpose: Renderiza el estado actual del tablero de Triqui en la consola    */
+/* utilizando colores ANSI para las fichas.                                   */
+/*                                                                            */
+/* Parameters:                                                                */
+/* tab - Matriz que representa el estado del tablero.                         */
+/*                                                                            */
+/* Returns: None                                                              */
+/******************************************************************************/
 
 void imprimirTablero(const vector<vector<int>>& tab) {
     cout << "\033[2J\033[1;1H";
@@ -37,8 +64,26 @@ void imprimirTablero(const vector<vector<int>>& tab) {
     }
 }
 
+/******************************************************************************/
+/*                                                                            */
+/* int main();                                                                */
+/*                                                                            */
+/* Purpose: Punto de entrada principal. Gestiona el ciclo de vida del juego,  */
+/* la interacción con el usuario y la alternancia de turnos entre             */
+/* el humano y la IA mediante una máquina de estados.                         */
+/*                                                                            */
+/* Returns: 0 al finalizar con éxito.                                         */
+/*                                                                            */
+/* Plan:                                                                      */
+/* Parte 1 : Inicialización del árbol de juego, la IA y la FSM.               */
+/* Parte 2 : Bucle principal del juego y renderizado del tablero actual.      */
+/* Parte 3 : Lógica del TURNO_HUMANO (entrada, validación y actualización).   */
+/* Parte 4 : Lógica del TURNO_IA (expansión, evaluación y ejecución).         */
+/*                                                                            */
+/******************************************************************************/
 int main() {
 
+/* Parte 1 --------------------------*/
     ArbolJuego arbol(new EstadoJuego(true));
     Minimax ia(&arbol); 
 
@@ -48,11 +93,13 @@ int main() {
 
     gameFSM estadoActual = jugadorIA ? TURNO_IA_MAX: TURNO_HUMANO;
 
+/* Parte 2 --------------------------*/
     while (estadoActual != FIN_PARTIDA) {
         EstadoJuego* raizActual = arbol.obtenerRaiz();
         imprimirTablero(raizActual->obtenerTablero());
 
         switch (estadoActual) {
+            /* Parte 3 --------------------------*/
             case TURNO_HUMANO: {
                 int f, c;
                 cout << "Tu turno (Fila Columna): ";
@@ -71,7 +118,7 @@ int main() {
                 }
                 break;
             }
-
+/* Parte 3 --------------------------*/
             case TURNO_IA_MAX: {
                 ia.expandirArbol();
                 ia.evaluarDFS();
