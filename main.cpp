@@ -23,13 +23,13 @@ void imprimirTablero(const vector<vector<int>>& tab) {
     for (int i = 0; i < 3; i++) {
         cout << i << " ";
         for (int j = 0; j < 3; j++) {
-            if (tab[i][j] == FICHA_MAX) 
+            if (tab[i][j] == FICHA_MAX)
                 cout << " \033[1;31mX\033[0m ";
-            else if (tab[i][j] == FICHA_MIN) 
+            else if (tab[i][j] == FICHA_MIN)
                 cout << " \033[1;34mO\033[0m ";
-            else 
+            else
                 cout << " . ";
-            
+
             if (j < 2) cout << "|";
         }
         cout << "\n";
@@ -40,62 +40,63 @@ void imprimirTablero(const vector<vector<int>>& tab) {
 int main() {
 
     ArbolJuego arbol(new EstadoJuego(true));
-    Minimax ia(&arbol); 
+    Minimax ia(&arbol);
 
     bool jugadorIA;
     cout << "Elegir tipo de jugador \n\t0.Manual\n\t1.Automatico" << endl;
     cin >> jugadorIA;
 
-    gameFSM estadoActual = jugadorIA ? TURNO_IA_MAX: TURNO_HUMANO;
+    gameFSM estadoActual = jugadorIA ? TURNO_IA_MAX : TURNO_HUMANO;
 
     while (estadoActual != FIN_PARTIDA) {
         EstadoJuego* raizActual = arbol.obtenerRaiz();
         imprimirTablero(raizActual->obtenerTablero());
 
         switch (estadoActual) {
-            case TURNO_HUMANO: {
-                int f, c;
-                cout << "Tu turno (Fila Columna): ";
-                cin >> f >> c;
+        case TURNO_HUMANO: {
+            int f, c;
+            cout << "Tu turno (Fila Columna): ";
+            cin >> f >> c;
 
-                if (f >= 0 && f <= 2 && c >= 0 && c <= 2 && raizActual->obtenerCasilla(f, c) == VACIO) {
-                    vector<vector<int>> nuevoTablero = raizActual->obtenerTablero();
-                    nuevoTablero[f][c] = FICHA_MAX;
-                    
-                    EstadoJuego* nuevoEstado = new EstadoJuego(nuevoTablero, true);
-                    arbol.actualizarRaiz(nuevoEstado);
-                    
-                    estadoActual = TURNO_IA_MIN; 
-                } else {
-                    cout << "Movimiento invalido.\n";
-                }
-                break;
+            if (f >= 0 && f <= 2 && c >= 0 && c <= 2 && raizActual->obtenerCasilla(f, c) == VACIO) {
+                vector<vector<int>> nuevoTablero = raizActual->obtenerTablero();
+                nuevoTablero[f][c] = FICHA_MAX;
+
+                EstadoJuego* nuevoEstado = new EstadoJuego(nuevoTablero, true);
+                arbol.actualizarRaiz(nuevoEstado);
+
+                estadoActual = TURNO_IA_MIN;
             }
-
-            case TURNO_IA_MAX: {
-                ia.expandirArbol();
-                ia.evaluarDFS();
-                ia.ejecutarMejorJugada();
-                imprimirTablero(arbol.obtenerRaiz()->obtenerTablero());
-                this_thread::sleep_for(chrono::seconds(2));
-
-                estadoActual = TURNO_IA_MIN;        
-                break;
+            else {
+                cout << "Movimiento invalido.\n";
             }
+            break;
+        }
 
-            case TURNO_IA_MIN: {
-                cout << "IA ...\n";
-                
-                ia.expandirArbol();
-                ia.evaluarDFS();
-                ia.ejecutarMejorJugada();
+        case TURNO_IA_MAX: {
+            ia.expandirArbol();
+            ia.evaluarDFS();
+            ia.ejecutarMejorJugada();
+            imprimirTablero(arbol.obtenerRaiz()->obtenerTablero());
+            this_thread::sleep_for(chrono::seconds(2));
 
-                estadoActual = jugadorIA ? TURNO_IA_MAX: TURNO_HUMANO;
-                break;
-            }
+            estadoActual = TURNO_IA_MIN;
+            break;
+        }
 
-            default:
-                break;
+        case TURNO_IA_MIN: {
+            cout << "IA ...\n";
+
+            ia.expandirArbol();
+            ia.evaluarDFS();
+            ia.ejecutarMejorJugada();
+
+            estadoActual = jugadorIA ? TURNO_IA_MAX : TURNO_HUMANO;
+            break;
+        }
+
+        default:
+            break;
         }
 
         if (arbol.obtenerRaiz()->revisarFinPartida().first) {
